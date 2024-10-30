@@ -9,6 +9,16 @@ stories:
   - intent: mood_great
   - action: utter_happy
 
+- story: greet and symptom information
+  steps:
+  - intent: greet
+  - action: utter_greet
+  - intent: inform_symptoms
+  - intent: affirm
+  - action: action_next_symptom
+  - intent: deny
+  - action: action_predict_disease
+
 - story: sad path 1
   steps:
   - intent: greet
@@ -28,3 +38,13 @@ stories:
   - action: utter_did_that_help
   - intent: deny
   - action: utter_goodbye
+
+- story: provide multiple symptoms and ask next
+  steps:
+    - action: action_save_multiple_symptoms
+    - action: action_ask_next_symptom
+
+- story: ask for disease prediction
+  steps:
+  - intent: request_disease_prediction
+  - action: action_predict_disease

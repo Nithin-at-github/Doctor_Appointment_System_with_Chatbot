@@ -38,6 +38,8 @@ nlu:
     - of course
     - that sounds good
     - correct
+    - yep
+    - yeah
 
 - intent: deny
   examples: |
@@ -48,6 +50,7 @@ nlu:
     - don't like that
     - no way
     - not really
+    - nope
 
 - intent: mood_great
   examples: |
@@ -70,8 +73,6 @@ nlu:
   examples: |
     - my day was horrible
     - I am sad
-    - I don't feel very well
-    - I am disappointed
     - super sad
     - I'm so sad
     - sad
@@ -89,3 +90,28 @@ nlu:
     - are you a human?
     - am I talking to a bot?
     - am I talking to a human?
+
+- intent: inform_symptoms
+  examples: |
+    - I have a fever and cough
+    - I feel tired and have a sore throat
+    - My throat hurts and I have a headache
+    - I am experiencing fever, cough, and tiredness
+    - I have been coughing for a few days and now have a fever
+    - I have a fever and my body hurts
+    - I'm not feeling well, I have a fever and headache
+
+- intent: request_disease_prediction
+  examples: |
+    - What disease do I have?
+    - Can you predict my illness?
+    - What could be wrong with me?
+    - Based on my symptoms, what could I have?
+    - What illness could I be suffering from?
+
+- intent: negative_feedback
+  examples: |
+    - I am disappointed
+    - I don't feel well
+    - This isn't working
+    - I am not satisfied

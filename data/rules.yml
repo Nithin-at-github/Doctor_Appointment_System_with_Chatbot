@@ -11,3 +11,18 @@ rules:
   steps:
   - intent: bot_challenge
   - action: utter_iamabot
+
+- rule: respond to greet
+  steps:
+  - intent: greet
+  - action: utter_greet
+
+- rule: handle negative feedback
+  steps:
+  - intent: negative_feedback
+  - action: utter_cheer_up
+
+- rule: respond to request for disease prediction
+  steps:
+  - intent: request_disease_prediction
+  - action: action_predict_disease

@@ -8,6 +8,19 @@ intents:
   - mood_great
   - mood_unhappy
   - bot_challenge
+  - inform_symptoms
+  - request_disease_prediction
+  - negative_feedback
+
+entities:
+  - symptom
+
+slots:
+  confirmed_symptoms:
+    type: list  # Assuming this slot holds multiple symptoms
+    influence_conversation: false  # Depends on your use case
+    mappings:
+      - type: from_text
 
 responses:
   utter_greet:
@@ -15,7 +28,7 @@ responses:
 
   utter_cheer_up:
   - text: "Here is something to cheer you up:"
-    image: "https://i.imgur.com/nGF1K8f.jpg"
+    image: "https://imgur.com/Oyx7I4Z"
 
   utter_did_that_help:
   - text: "Did that help you?"
@@ -23,11 +36,40 @@ responses:
   utter_happy:
   - text: "Great, carry on!"
 
+  utter_affirm:
+    - text: "Great, carry on!"
+
+  utter_deny:
+    - text: "Okay, let's move forward."
+
   utter_goodbye:
   - text: "Bye"
 
   utter_iamabot:
   - text: "I am a bot, powered by Rasa."
+
+  utter_ask_symptom:
+    - text: "Do you have any other symptoms?"
+  
+  utter_ask_symptom_confirmation:
+    - text: "Are you also experiencing {next_symptom}?"
+
+  utter_disease_prediction:
+    - text: "Based on your symptoms, the predicted disease is {predicted_disease}"
+
+  utter_no_more_symptoms:
+    - text: "No additional relevant symptoms to ask about."
+
+actions:
+  - action_save_multiple_symptoms
+  - action_predict_disease
+  - action_ask_next_symptom
+  - action_next_symptom
+
+forms:
+  disease_form:
+    required_slots:
+      - confirmed_symptoms
 
 session_config:
   session_expiration_time: 60
