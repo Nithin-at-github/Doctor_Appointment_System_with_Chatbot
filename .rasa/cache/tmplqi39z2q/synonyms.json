@@ -1,0 +1,12 @@
+{
+  "fever": "fever",
+  "tired": "tired",
+  "headache": "headache",
+  "cough": "cough",
+  "cold": "cold",
+  "flu": "flu",
+  "malaria": "malaria",
+  "asthma": "asthma",
+  "dengue": "dengue",
+  "diabetes": "diabetes"
+}

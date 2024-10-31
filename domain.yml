@@ -8,26 +8,93 @@ intents:
   - mood_great
   - mood_unhappy
   - bot_challenge
+  - provide_symptom
+  - ask_disease_info
+  - thank_you
+  - ask_disease
+  - deny_symptom
+  - confirm_symptoms
+  - confirm_disease
 
 responses:
   utter_greet:
-  - text: "Hey! How are you?"
+    - text: "Hello! Welcome to the disease prediction chatbot. How can I help you today?"
+
+  utter_ask_initial_symptoms:
+    - text: "Please enter one or more symptoms you are experiencing (comma-separated)."
+
+  utter_ask_followup_symptom:
+    - text: "Do you have {next_symptom}?"
+
+  utter_ask_if_provide_symptoms:
+    - text: "Would you like to provide your symptoms for a health check?"
+
+  utter_thank_you:
+    - text: "You're welcome! Take care and stay healthy."
 
   utter_cheer_up:
-  - text: "Here is something to cheer you up:"
-    image: "https://i.imgur.com/nGF1K8f.jpg"
+    - text: "Here is something to cheer you up:"
+      image: "https://i.imgur.com/nGF1K8f.jpg"
 
   utter_did_that_help:
-  - text: "Did that help you?"
+    - text: "Did that help you?"
 
   utter_happy:
-  - text: "Great, carry on!"
+    - text: "Great, carry on!"
 
   utter_goodbye:
-  - text: "Bye"
+    - text: "Bye"
 
   utter_iamabot:
-  - text: "I am a bot, powered by Rasa."
+    - text: "I am a bot, powered by Rasa."
+
+slots:
+  user_symptoms:
+    type: list
+    influence_conversation: false
+    mappings:
+      - type: from_text
+  confirmed_symptoms:
+    type: list
+    influence_conversation: false
+    mappings:
+      - type: from_intent
+        intent: confirm_symptoms
+        value: true
+  remaining_symptoms:
+    type: list
+    influence_conversation: false
+    mappings:
+      - type: from_intent
+        value: true
+  next_symptom:
+    type: text
+    mappings:
+      - type: from_text
+  initial_symptoms:
+    type: text
+    mappings:
+      - type: from_text
+  followup_symptom:
+    type: text
+    mappings:
+      - type: from_text
+
+actions:
+  - action_ask_symptoms
+  - action_provide_followup
+  - action_ask_disease_info
+  - action_predict_disease
+
+entities:
+  - symptom
+  - disease
+
+forms:
+  symptom_form:
+    required_slots:
+      - initial_symptoms
+      - followup_symptom
 
 session_config:
   session_expiration_time: 60

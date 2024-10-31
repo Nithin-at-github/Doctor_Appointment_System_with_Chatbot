@@ -89,3 +89,68 @@ nlu:
     - are you a human?
     - am I talking to a bot?
     - am I talking to a human?
+
+- intent: provide_symptom
+  examples: |
+    - I have a headache
+    - I feel feverish
+    - I have been coughing
+    - My throat is sore
+    - I am feeling dizzy
+    - I have chest pain
+    - I am experiencing nausea
+    - I have [fever](symptom)
+    - I am feeling [tired](symptom)
+    - I am suffering from [headache](symptom)
+    - I am having [cough](symptom) and [cold](symptom)
+
+- intent: confirm_symptoms
+  examples: |
+    - Yes
+    - yeah
+    - sure
+    - absolutely
+    - I do
+    - definitely
+    - correct
+    - I have that
+    - I am experiencing it
+    - yep
+
+- intent: deny_symptom
+  examples: |
+    - No
+    - nope
+    - not really
+    - I don't have that
+    - no, I don't
+    - not at all
+    - No, I don't have that symptom.
+    - No, I haven't experienced that.
+
+- intent: ask_disease
+  examples: |
+    - What disease do I have?
+    - Can you tell me what illness I might have?
+
+- intent: ask_disease_info
+  examples: |
+    - Tell me more about [flu](disease)
+    - What is [malaria](disease)?
+    - Can you explain [asthma](disease)?
+    - I want to know about [dengue](disease)
+    - Give me information on [diabetes](disease)
+    - What disease do I have?
+    - Can you tell me what illness I might have?
+    - Can you tell me more about this disease?
+    - I'd like more information on the disease.
+    - What is this disease about?
+
+- intent: thank_you
+  examples: |
+    - Thank you!
+    - Thanks a lot.
+    - Appreciate your help.
+    - I appreciate it
+    - Thanks for the help
+    - You're great

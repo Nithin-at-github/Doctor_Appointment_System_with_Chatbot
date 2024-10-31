@@ -1,12 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
+{% load static %}
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Responsive Chat Application</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'assets/plugins/bootstrap/css/bootstrap.min.css'%}">
+    <!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"> -->
+    <link rel="stylesheet" href="{% static 'assets/plugins/fontawesome/css/fontawesome.min.css'%}">
+    <link rel="stylesheet" href="{% static 'assets/plugins/fontawesome/css/all.min.css'%}">
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"> -->
     <style>
         body {
             background-color: #EFF5FF;
@@ -114,7 +118,8 @@
 
         .input-group {
             padding: 20px;
-            /* Add padding around input */
+            /* Add padding around input */ 
+            bottom: 20px;
             position: relative;
             /* Change to relative positioning */
         }
@@ -149,7 +154,7 @@
 <body>
 
     <div class="sidebar" id="sidebar">
-        <button class="toggle-btn" id="toggleSidebar"><i class="fas fa-times"></i></button> <!-- Stable sidebar icon -->
+        <button class="toggle-btn btn-lg" id="toggleSidebar"><i class="fas fa-times"></i></button> <!-- Stable sidebar icon -->
     </div>
 
     <div class="chat-container">
@@ -167,10 +172,10 @@
                 </div>
             </div>
         </div>
-
     </div>
 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="{% static 'assets/js/jquery-3.6.0.min.js'%}"></script>
+    <!-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> -->
     <script>
         $(document).ready(function () {
 
