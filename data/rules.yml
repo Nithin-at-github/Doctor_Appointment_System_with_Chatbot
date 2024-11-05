@@ -1,50 +1,24 @@
 version: "3.1"
 
 rules:
+  - rule: Greet the user
+    steps:
+      - intent: greet
+      - action: utter_greet
+      - action: utter_ask_symptoms
 
-- rule: Greet and ask if the user wants to provide symptoms
-  steps:
-    - intent: greet
-    - action: utter_greet
-    - action: utter_ask_if_provide_symptoms
+  - rule: Ask about specific symptoms
+    condition:
+      - slot_was_set:
+          - disease_prediction: null
+    steps:
+      - action: action_predict_disease
+      - action: action_suggest_next_symptom
 
-- rule: Say goodbye anytime the user says goodbye
-  steps:
-    - intent: goodbye
-    - action: utter_goodbye
-
-- rule: Say 'I am a bot' anytime the user challenges
-  steps:
-    - intent: bot_challenge
-    - action: utter_iamabot
-
-- rule: User provides initial symptoms after greeting
-  condition:
-    - active_loop: null
-  steps:
-    - intent: affirm
-    - action: action_ask_symptoms
-    - active_loop: symptom_form
-
-- rule: Provide initial symptoms without greeting
-  condition:
-    - active_loop: null
-  steps:
-    - intent: provide_symptom
-    - action: action_ask_symptoms
-    - active_loop: symptom_form
-
-- rule: Confirm follow-up symptom
-  condition:
-    - active_loop: symptom_form
-  steps:
-    - intent: confirm_symptoms
-    - action: action_provide_followup
-    - active_loop: symptom_form
-
-- rule: Stop action when prediction is made
-  condition:
-    - active_loop: action_predict_disease
-  steps:
-    - action: action_predict_disease
-    - active_loop: null
+  - rule: Confirm prediction if confident
+    condition:
+      - slot_was_set:
+          - prediction_confidence: "high"   # Set by ActionPredictDisease if confidence >= 0.75
+    steps:
+      - action: action_show_disease_info
+      - action: utter_goodbye

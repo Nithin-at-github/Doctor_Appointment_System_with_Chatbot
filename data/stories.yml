@@ -1,50 +1,17 @@
 version: "3.1"
 
 stories:
-
-- story: happy path
-  steps:
-    - intent: greet
-    - action: utter_greet
-    - intent: mood_great
-    - action: utter_happy
-
-- story: sad path 1
-  steps:
-    - intent: greet
-    - action: utter_greet
-    - intent: mood_unhappy
-    - action: utter_cheer_up
-    - action: utter_did_that_help
-    - intent: affirm
-    - action: utter_happy
-
-- story: sad path 2
-  steps:
-    - intent: greet
-    - action: utter_greet
-    - intent: mood_unhappy
-    - action: utter_cheer_up
-    - action: utter_did_that_help
-    - intent: deny
-    - action: utter_goodbye
-
-- story: user provides symptoms
-  steps:
-    - intent: provide_symptom
-    - action: symptom_form
-    - active_loop: symptom_form
-
-- story: follow-up question and prediction
-  steps:
-    - action: symptom_form
-    - active_loop: symptom_form
-    - intent: confirm_symptoms
-    - action: action_provide_followup
-    - action: action_predict_disease
-    - active_loop: null
-
-- story: thank the bot
-  steps:
-    - intent: thank_you
-    - action: utter_thank_you
+  - story: Symptom confirmation and prediction
+    steps:
+      - intent: greet
+      - action: utter_greet
+      - action: utter_ask_symptoms
+      - intent: provide_symptom
+        entities:
+          - symptom: "fever"
+      - action: action_predict_disease
+      - action: action_suggest_next_symptom
+      - intent: affirm
+      - action: action_suggest_next_symptom
+      - intent: goodbye
+      - action: utter_goodbye

@@ -26,29 +26,20 @@
 #
 #         return []
 
-import os
-import joblib
-import pandas as pd
-from rasa_sdk import Action, Tracker
 from rasa_sdk.executor import CollectingDispatcher
+from rasa_sdk import Action, Tracker
 from rasa_sdk.events import SlotSet
+import pandas as pd
+import joblib
+import os
 
 # Define the absolute path to the directory where your actions.py is located
 current_dir = os.path.dirname(os.path.abspath(__file__))
 
-# Load the trained model, symptom list, and co-occurrence graph
-# with open(os.path.join(current_dir, 'disease_prediction_model.pkl'), 'rb') as file1:
-#     model = pickle.load(file1)
-# with open(os.path.join(current_dir, 'symptom_list.pkl'), 'rb') as file2:
-#     symptom_list = pickle.load(file2)
-# with open(os.path.join(current_dir, 'co_occurrence_graph.pkl'), 'rb') as file3:
-#     co_occurrence_graph = pickle.load(file3)
-
+# Load the model and data files
 model = joblib.load(os.path.join(current_dir, 'disease_prediction_model.pkl'))
 symptom_list = joblib.load(os.path.join(current_dir, 'symptom_list.pkl'))
 co_occurrence_graph = joblib.load(os.path.join(current_dir, 'co_occurrence_graph.pkl'))
-
-# Load disease description and precaution data
 disease_description_df = pd.read_csv(os.path.join(current_dir, 'disease_description.csv'))
 disease_precaution_df = pd.read_csv(os.path.join(current_dir, 'disease_precaution.csv'))
 
@@ -63,62 +54,69 @@ def predict_disease(symptoms):
 def get_disease_info(disease):
     description_row = disease_description_df[disease_description_df['Disease'].str.lower() == disease.lower()]
     description = description_row['Description'].values[0] if not description_row.empty else "No description available."
+
     precaution_row = disease_precaution_df[disease_precaution_df['Disease'].str.lower() == disease.lower()]
-    precautions = [precaution_row[f'Precaution_{i+1}'].values[0] 
-                   for i in range(4) if f'Precaution_{i+1}' in precaution_row.columns 
-                   and pd.notna(precaution_row[f'Precaution_{i+1}'].values[0])]
-    return description, precautions
-
-def get_next_symptom(confirmed_symptoms, remaining_symptoms):
-    candidates = []
-    for symptom in confirmed_symptoms:
-        if symptom in co_occurrence_graph:
-            for related_symptom, weight in co_occurrence_graph[symptom]:
-                if related_symptom in remaining_symptoms:
-                    candidates.append((related_symptom, weight))
-    if candidates:
-        candidates.sort(key=lambda x: x[1], reverse=True)
-        return candidates[0][0]
-    return remaining_symptoms[0] if remaining_symptoms else None
-
-class ActionAskSymptoms(Action):
-    def name(self) -> str:
-        return "action_ask_symptoms"
-
-    def run(self, dispatcher: CollectingDispatcher, tracker: Tracker, domain):
-        user_symptoms = tracker.get_slot("user_symptoms")
-        if not user_symptoms:
-            dispatcher.utter_message("Please provide one or more symptoms.")
-            return []
-
-        confirmed_symptoms = user_symptoms.split(",")
-        remaining_symptoms = [symptom for symptom in symptom_list if symptom not in confirmed_symptoms]
-
-        next_symptom = get_next_symptom(confirmed_symptoms, remaining_symptoms)
-        if next_symptom:
-            dispatcher.utter_message(f"Do you have {next_symptom}? (yes/no)")
-            return [SlotSet("remaining_symptoms", remaining_symptoms), SlotSet("next_symptom", next_symptom)]
-        else:
-            return []
+    precautions = [precaution_row[f'Precaution_{i+1}'].values[0] for i in range(4) 
+                   if f'Precaution_{i+1}' in precaution_row.columns and pd.notna(precaution_row[f'Precaution_{i+1}'].values[0])]
+    return description, precautions if precautions else ["No precautions available."]
 
 class ActionPredictDisease(Action):
     def name(self) -> str:
         return "action_predict_disease"
-
-    def run(self, dispatcher: CollectingDispatcher, tracker: Tracker, domain):
-        confirmed_symptoms = tracker.get_slot("confirmed_symptoms")
-        if not confirmed_symptoms:
-            dispatcher.utter_message("I'm unable to predict the disease without symptoms.")
-            return []
-
-        predicted_disease, confidence = predict_disease(confirmed_symptoms)
+    
+    def run(self, dispatcher, tracker, domain):
+        confirmed_symptoms = tracker.get_slot("confirmed_symptoms") or []
+        
+        # Create a feature vector based on the confirmed symptoms
+        symptom_vector = [1 if symptom in confirmed_symptoms else 0 for symptom in symptom_list]
+        input_df = pd.DataFrame([symptom_vector], columns=symptom_list)
+        
+        # Get disease prediction and confidence
+        disease, confidence = predict_disease(confirmed_symptoms)
+        
+        # Always set the disease_prediction and prediction_confidence slots
+        events = [
+            SlotSet("disease_prediction", disease),
+            SlotSet("prediction_confidence", confidence)
+        ]
+        
+        # Only display message if confidence is above the threshold
         if confidence >= 0.75:
-            description, precautions = get_disease_info(predicted_disease)
-            dispatcher.utter_message(f"The predicted disease is {predicted_disease} with confidence {confidence:.2f}.")
-            dispatcher.utter_message(f"Disease Description: {description}")
-            dispatcher.utter_message("Precautions to take:")
+            description, precautions = get_disease_info(disease)
+            dispatcher.utter_message(text=f"The predicted disease is {disease} with confidence {confidence:.2f}.")
+            dispatcher.utter_message(text=f"Disease Description: {description}")
+            dispatcher.utter_message(text="Precautions to take:")
             for precaution in precautions:
-                dispatcher.utter_message(f"- {precaution}")
-        else:
-            dispatcher.utter_message(f"I'm not confident enough to make a prediction with the provided symptoms.")
-        return []
+                dispatcher.utter_message(text=f"- {precaution}")
+        
+        return events
+
+class ActionSuggestNextSymptom(Action):
+    def name(self):
+        return "action_suggest_next_symptom"
+
+    def run(self, dispatcher, tracker, domain):
+        confirmed_symptoms = tracker.get_slot("confirmed_symptoms") or []
+        remaining_symptoms = tracker.get_slot("remaining_symptoms") or [
+            symptom for symptom in symptom_list if symptom not in confirmed_symptoms
+        ]
+        
+        # Identify next symptom based on co-occurrence graph
+        candidates = [
+            (related_symptom, weight) for symptom in confirmed_symptoms 
+            if symptom in co_occurrence_graph for related_symptom, weight in co_occurrence_graph[symptom]
+            if related_symptom in remaining_symptoms
+        ]
+        
+        if candidates:
+            candidates.sort(key=lambda x: x[1], reverse=True)
+            next_symptom = candidates[0][0]
+            remaining_symptoms.remove(next_symptom)
+            dispatcher.utter_message(template="utter_ask_next_symptom", next_symptom=next_symptom)
+            
+            # Always update remaining symptoms slot
+            return [SlotSet("remaining_symptoms", remaining_symptoms)]
+        
+        # Fallback in case no candidates are found
+        dispatcher.utter_message(text="No additional relevant symptoms to ask about.")
+        return [SlotSet("remaining_symptoms", remaining_symptoms)]
