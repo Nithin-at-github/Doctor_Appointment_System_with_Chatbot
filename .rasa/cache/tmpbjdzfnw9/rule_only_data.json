@@ -1,7 +1,0 @@
-{
-  "rule_only_slots": [],
-  "rule_only_loops": [
-    "action_predict_disease",
-    "action_ask_symptoms"
-  ]
-}

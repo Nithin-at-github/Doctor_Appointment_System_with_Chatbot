@@ -1,6 +1,0 @@
-{
-  "rule_only_slots": [
-    "disease_prediction"
-  ],
-  "rule_only_loops": []
-}

@@ -12,7 +12,7 @@ def USERBASE(request):
 
 
 def Index(request):
-    doctorview = DoctorReg.objects.all()
+    doctorview = DoctorReg.objects.all().order_by('-id')
     page = Page.objects.all()
 
     context = {

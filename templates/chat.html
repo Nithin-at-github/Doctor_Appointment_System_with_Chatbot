@@ -3,7 +3,8 @@
 {% load static %}
 
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8">  
+    <link rel="icon" href="{% static 'img/icon.ico' %}">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Responsive Chat Application</title>
     <link rel="stylesheet" href="{% static 'assets/plugins/bootstrap/css/bootstrap.min.css'%}">
@@ -176,7 +177,7 @@
 
     <script src="{% static 'assets/js/jquery-3.6.0.min.js'%}"></script>
     <!-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> -->
-    <script>
+    <!-- <script>
         $(document).ready(function () {
 
             $('#send_btn').click(function () {
@@ -237,7 +238,62 @@
                 }
             });
         });
+    </script> -->
+    <script>
+        $(document).ready(function () {
+            $('#send_btn').on('click', function () {
+                sendMessage();
+            });
+    
+            $('#user_input').on('keypress', function (e) {
+                if (e.which === 13) {  // Enter key pressed
+                    sendMessage();
+                }
+            });
+    
+            function sendMessage() {
+                const userMessage = $('#user_input').val().trim();
+                if (userMessage === '') return;
+    
+                // Append user's message to chatbox
+                $('#chatbox').append('<div class="chat-message user-message"><p>' + userMessage + '</p></div>');
+                $('#user_input').val('');
+    
+                // Send message to server
+                $.ajax({
+                    url: '{% url "chat" %}',  // Django URL for the view
+                    method: 'POST',
+                    data: {
+                        'message': userMessage,
+                        'csrfmiddlewaretoken': '{{ csrf_token }}'
+                    },
+                    success: function (response) {
+                        // Use response.bot_message to access the bot's response message
+                        $('#chatbox').append('<div class="chat-message bot-message"><p>' + (response.bot_message || 'Sorry, something went wrong.') + '</p></div>');
+                        $('#chatbox').scrollTop($('#chatbox')[0].scrollHeight);
+                    },
+                    error: function () {
+                        $('#chatbox').append('<div class="chat-message bot-message"><p>Sorry, something went wrong.</p></div>');
+                    }
+                });
+            }
+    
+            // Toggle sidebar
+            $('#toggleSidebar').click(function () {
+                $('#sidebar').toggleClass('collapsed');
+                $('#header').toggleClass('collapsed'); // Adjust header position
+                $(this).find('i').toggleClass('fa-times fa-bars'); // Change icon based on state
+    
+                // Change toggle button color based on sidebar state
+                if ($('#sidebar').hasClass('collapsed')) {
+                    $(this).css('color', '#0463FA'); // Change to sidebar color when collapsed
+                } else {
+                    $(this).css('color', 'white'); // Reset to default when expanded
+                }
+            });
+        });
     </script>
+    
 
 </body>
 
