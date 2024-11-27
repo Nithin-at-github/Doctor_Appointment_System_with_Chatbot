@@ -11,5 +11,7 @@ class UserModel(UserAdmin):
 admin.site.register(CustomUser,UserModel)
 admin.site.register(Specialization)
 admin.site.register(DoctorReg)
+admin.site.register(PatientReg)
 admin.site.register(Appointment)
 admin.site.register(Page)
+admin.site.register(Payments)

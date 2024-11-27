@@ -31,12 +31,12 @@ def doLogin(request):
             elif user_type == '2':
                  return redirect('doctor_home')
             elif user_type == '3':
+                 return redirect('patient_home')
+            elif user_type == '4':
                 return HttpResponse("This is User panel")
-            
-            
         else:
-                messages.error(request,'Email or Password is not valid')
-                return redirect('login')
+            messages.error(request,'Email or Password is not valid')
+            return redirect('login')
     else:
             messages.error(request,'Email or Password is not valid')
             return redirect('login')

@@ -53,7 +53,7 @@
     <th>Appointment Number</th>
     <th>Patient Name</th>
     <th>Date of Appointment</th>
-    <th>Time of Appointment</th>
+    <th>Alloted Time</th>
     <th>Creation Date</th>
     <th>Status</th>
     <th class="text-right">Action</th>
@@ -69,7 +69,7 @@
     <td>{{i.time_of_appointment}}</td>
     <td>{{i.created_at}}</td>
     {% if i.status == '0' %}
-                                                <td>Not Updated Yet</td>
+                                               <td>Not Updated Yet</td>
                                                 {% else %}
                                                 <td>{{ i.status}}</td>{% endif %}
     <td class="text-right">

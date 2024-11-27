@@ -1,6 +1,6 @@
-from django.shortcuts import render,redirect,HttpResponse
+from django.shortcuts import get_object_or_404, render,redirect,HttpResponse
 from django.contrib.auth.decorators import login_required
-from dasapp.models import Specialization,DoctorReg,Appointment,Page
+from dasapp.models import Specialization,DoctorReg,Appointment,Page, Payments, PatientReg, CustomUser
 from django.contrib import messages
 from datetime import datetime
 
@@ -8,10 +8,14 @@ from datetime import datetime
 def ADMINHOME(request):
     doctor_count = DoctorReg.objects.all().count
     specialization_count = Specialization.objects.all().count
+    payments = Payments.objects.all()
+    revenue = 0
+    for payment in payments:
+        revenue += payment.admin_share
     context = {
         'doctor_count':doctor_count,
         'specialization_count':specialization_count,
-
+        'revenue': revenue
     } 
     return render(request,'admin/adminhome.html',context)
 
@@ -75,10 +79,9 @@ def DoctorList(request):
 
 def ViewDoctorDetails(request,id):
     doctorlist1=DoctorReg.objects.filter(id=id)
-    context={'doctorlist1':doctorlist1
-
+    context={
+        'doctorlist1':doctorlist1
     }
-
     return render(request,'admin/doctor-details.html',context)
 
 def ViewDoctorAppointmentList(request,id):
@@ -88,6 +91,23 @@ def ViewDoctorAppointmentList(request,id):
     }
 
     return render(request,'admin/doctor_appointment_list.html',context)
+
+@login_required(login_url='/')
+def PatientList(request):
+    patientlist = PatientReg.objects.all()
+    context = {
+        'patientlist':patientlist,
+    }
+    return render(request,'admin/patient_list.html',context)
+
+@login_required(login_url='/')
+def RemovePatient(request,id):
+    patient = get_object_or_404(PatientReg, id=id)
+    user = patient.admin
+    if user:
+        user.delete()
+        messages.success(request, "Patient Removed Successfully.")
+        return redirect('viewpatientslist')
 
 def ViewPatientDetails(request,id):
     patientdetails=Appointment.objects.filter(id=id)
@@ -156,4 +176,3 @@ def UPDATE_WEBSITE_DETAILS(request):
           messages.success(request,"Your website detail has been updated successfully")
           return redirect('website_update')
     return render(request,'admin/website.html')
-

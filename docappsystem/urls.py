@@ -16,7 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from .import views,adminviews,docviews,userviews
+from .import views,adminviews,docviews,userviews, patientviews
 from django.conf.urls.static import static
 from django.conf import settings
 from chatroom import views as chat_views
@@ -37,7 +37,9 @@ urlpatterns = [
     path('UpdateSpecialization/<str:id>', adminviews.UPDATE_SPECIALIZATION, name='update_specilizations'),
     path('UPDATE_Specialization_DETAILS', adminviews.UPDATE_SPECIALIZATION_DETAILS, name='update_specilizations_details'),
     path('Admin/DoctorList', adminviews.DoctorList, name='viewdoctorlist'),
+    path('Admin/PatientList', adminviews.PatientList, name='viewpatientslist'),
     path('Admin/ViewDoctorDetails/<str:id>', adminviews.ViewDoctorDetails, name='viewdoctordetails'),
+    path('RemovePatient/<str:id>', adminviews.RemovePatient, name='removepatient'),
     path('Admin/ViewDoctorAppointmentList/<str:id>', adminviews.ViewDoctorAppointmentList, name='viewdoctorappointmentlist'),
     path('Admin/ViewPatientDetails/<str:id>', adminviews.ViewPatientDetails, name='viewpatientdetails'),
     path('SearchDoctor', adminviews.Search_Doctor, name='search_doctor'),
@@ -63,6 +65,15 @@ urlpatterns = [
     path('PatientAppointmentCompleted', docviews.Patient_Appointment_Completed, name='patientappointmentcompleted'),
     path('SearchAppointment', docviews.Search_Appointments, name='search_appointment'),
     path('BetweenDateReport', docviews.Between_Date_Report, name='between_date_report'),
+    path('PatientAllotTime/<str:app_id>', docviews.Patient_Allot_Time, name='allottime'),
+    
+    #This is Patient Panel
+    path('patsignup/', patientviews.PatientSignup, name='patsignup'),
+    path('Patient/PatHome', patientviews.PatientHOME, name='patient_home'),
+    path('Patient/appointments', patientviews.ViewAppointments, name='my_apps'),
+    path('Patient/cancel_appointment/<str:id>', patientviews.CancelAppointment, name='cancelappointment'),
+    path('Patient/medhistory/<str:id>', patientviews.MedicalHistory, name='medhistory'),
+    
 
     #This is User Panel
     path('userbase/', userviews.USERBASE, name='userbase'),

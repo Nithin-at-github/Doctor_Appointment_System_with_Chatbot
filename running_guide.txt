@@ -1,8 +1,0 @@
-Run App : python manage.py runserver
-
-Run Chatbot : rasa run --enable-api --cors "*"
-
-Run Chatbot Actions : rasa run actions
-
-
-These three commands should be running in parallel on three different terminals
