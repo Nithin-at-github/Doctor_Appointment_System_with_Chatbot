@@ -1,29 +1,26 @@
 import os
 import re
-from django.urls import reverse
 import nltk
+import spacy
 import joblib
 import random
 import difflib
 import pandas as pd
-from nltk.tree import Tree
-from datetime import datetime, timedelta
+import parsedatetime
 from fuzzywuzzy import process
-from dateutil.parser import parse
 from nltk import ne_chunk, pos_tag
 from collections import defaultdict
-from django.shortcuts import get_object_or_404, render
 from django.http import JsonResponse
 from nltk import word_tokenize, pos_tag
 from nltk.tokenize import word_tokenize
+from datetime import datetime, timedelta
+from dateparser import parse as dateparser_parse
 from nltk.corpus import stopwords, wordnet as wn
 from django.utils.timezone import make_aware, now
 from nltk.sentiment import SentimentIntensityAnalyzer
+from django.shortcuts import get_object_or_404, render
 from django.contrib.auth.decorators import login_required
 from dasapp.models import DoctorReg, Specialization, Appointment, CustomUser, PatientReg
-from dateparser import parse as dateparser_parse
-import parsedatetime
-import spacy
 
 # Load model and data files only once (outside view functions for efficiency)
 current_dir = os.path.dirname(os.path.abspath(__file__))

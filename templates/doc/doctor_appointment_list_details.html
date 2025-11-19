@@ -10,7 +10,7 @@
         <h3 class="page-title">Appointments Lists</h3>
         <ul class="breadcrumb">
           <li class="breadcrumb-item"><a href="{% url 'doctor_home' %}">Dashboard</a></li>
-          <li class="breadcrumb-item active">View Aappointment</li>
+          <li class="breadcrumb-item active">View Appointment</li>
         </ul>
       </div>
 
@@ -48,7 +48,7 @@
           <div class="table-responsive">
             <table class="table table-hover table-center mb-0 datatable">
               {% for i in patientdetails %}
-              <tr><strong style="font-size: medium;text-align: center;">Appointment Number:
+              <tr><strong style="font-size: medium;text-align: center;">Appointment Num:
                   {{i.appointmentnumber}}</strong> <strong style="padding-left: 600px;">Date:
                   {{i.date_of_appointment}}</strong></tr>
 
@@ -105,12 +105,12 @@
                 <td colspan="4">{{ i.findings }}</td>
                 {% else %}
                 <th>Doctor Findings</th>
-                <td>Not Findings Yet</td> {% endif %}
+                <td>Not Findings</td> {% endif %}
               </tr>
 
 
             </table>
-            {% if i.status != 'Completed' %}
+            {% if i.status == 'PaymentDone' %}
 
           </div>
           <p class="text-center" style="padding-top: 20px">

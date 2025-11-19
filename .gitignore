@@ -1,0 +1,6 @@
+# Visual Studio Code local history
+**/.history/
+
+# Visual Studio Code settings
+# Ignore the whole folder by default
+.vscode/
